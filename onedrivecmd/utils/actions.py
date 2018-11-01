@@ -516,7 +516,7 @@ def do_remote(client, args):
     for i in args.rest:
         # There is no guarantee that this shall be normal, JUST like
         # all the similar services
-        json_data = {'@content.sourceUrl': i, 'file': {}, 'name': path_to_name(i)}
+        json_data = {'@microsoft.graph.sourceUrl': i, 'file': {}, 'name': path_to_name(i)}
 
         root = client.item(drive = 'me', id = 'root').get()
         parent_id = root.id
