@@ -4,6 +4,7 @@
 # Purpose: Argument parser for onedrivecmd
 # Created: 09/24/2016
 
+from __future__ import unicode_literals
 import argparse
 import os
 
@@ -112,7 +113,7 @@ def parse_args():
     # Set mutually exclusive actions
     parser.add_argument('mode',
                         choices = ['init_business', 'init', 'get', 'list', 'put', 'delete', 'mkdir', 'move', 'remote',
-                                   'quota', 'share', 'direct', 'search'],
+                                   'status', 'quota', 'share', 'direct', 'search'],
                         help = """Action to be done.\n
                         init: Use OAuth to setup the programme\n
                         init_business: Use OAuth to setup the programme with Office 365\n

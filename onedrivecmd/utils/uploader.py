@@ -3,6 +3,7 @@
 # Author:  Beining --<i@cnbeining.com>
 # Purpose: File uploader for onedrivecmd
 # Created: 09/24/2016
+from __future__ import unicode_literals
 
 import json
 from progress.bar import Bar

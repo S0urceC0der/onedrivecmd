@@ -4,6 +4,7 @@
 # Purpose: Session helper for onedrivecmd
 # Created: 09/24/2016
 
+from __future__ import unicode_literals
 import onedrivesdk
 import logging
 import json
@@ -42,6 +43,9 @@ def refresh_token(client):
 
 
 ## Make our own even worse Session
+
+
+conf_data = None
 
 
 def save_session(client, path = ''):
@@ -90,6 +94,8 @@ def save_session(client, path = ''):
                                                                    'scope_string': ' '.join([str(i) for i in client.auth_provider._session.scope]),
                                                                    })
 
+    global conf_data
+    conf_data = status_dict
     status = json.dumps(status_dict)
 
     with open(path, "w+") as session_file:
@@ -118,9 +124,11 @@ def load_session(client, path = ''):
 
     ## start of function
     ## Read Session file
+    global conf_data
     try:
         with open(path, 'r') as session_file:
             status_dict = json.loads(session_file.read())
+            conf_data = status_dict
     except IOError as e:
         # file not exist or some other problems...
         logging.fatal(e.strerror)
@@ -152,6 +160,13 @@ def load_session(client, path = ''):
 
     ## put API endpoint in
     return onedrivesdk.OneDriveClient(status_dict['client.base_url'], auth_provider, http_provider)
+
+
+def get_conf():
+    if conf_data is not None:
+        return conf_data
+    else:
+        return {}
 
 
 if __name__=='__main__':

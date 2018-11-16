@@ -4,6 +4,7 @@
 # Purpose: Helpers for Item operations for onedrivecmd
 # Created: 09/24/2016
 
+from __future__ import unicode_literals
 import onedrivesdk
 
 from onedrivecmd.utils import convert_utf8_dict_to_dict
@@ -28,6 +29,7 @@ def get_remote_item(client, path = '', id = ''):
     try:
         if path != '':  # check path
             path = od_path_to_api_path(path)
+            # path = path.encode("utf-8")
             f = client.item(drive = 'me', path = path).get()
         elif id != '':  # check id
             f = client.item(drive = 'me', id = id).get()

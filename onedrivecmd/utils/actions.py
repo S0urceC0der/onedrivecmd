@@ -159,7 +159,8 @@ def do_get(client, args):
     """
 
     link_list = []
-    for f in args.rest:
+    rest = [str_to_unicode(p) for p in args.rest]
+    for f in rest:
 
         # get a file item
         item = get_remote_item(client, path = f)
@@ -231,7 +232,8 @@ def do_share(client, args):
     Supposedly this is a permanent link.
     """
 
-    for f in args.rest:
+    rest = [str_to_unicode(p) for p in args.rest]
+    for f in rest:
 
         # get a file item
         item = get_remote_item(client, path = f)
@@ -259,7 +261,8 @@ def do_direct(client, args):
     Supposedly this is a permanent link. Could use another 301 to final link.
     """
 
-    for f in args.rest:
+    rest = [str_to_unicode(p) for p in args.rest]
+    for f in rest:
 
         # get a file item
         item = get_remote_item(client, path = f)
@@ -371,13 +374,14 @@ def do_put(client, args):
     https://dev.onedrive.com/items/upload_large_files.htm#best-practices
     """
     # set target dir
-    if not args.rest[-1].startswith('od:/'):
-        from_list = args.rest
+    rest = [str_to_unicode(p) for p in args.rest]
+    if not rest[-1].startswith('od:/'):
+        from_list = rest
         target_dir = '/'
 
     else:
-        from_list = args.rest[:-1]
-        target_dir = args.rest[-1]
+        from_list = rest[:-1]
+        target_dir = rest[-1]
 
         # fix python cannot split path without / at end
         if not target_dir.endswith('/'):
@@ -412,6 +416,7 @@ def do_delete(client, args):
 
     Somehow the SDK does not have this function.
     """
+    # rest = [str_to_unicode(p) for p in args.rest]
     for i in args.rest:
         if i.startswith('od:/'):  # is somewhere remote
             f = get_remote_item(client, path = i)
@@ -433,7 +438,8 @@ def do_mkdir(client, args):
 
     The SDK somehow refuse to work. Have to use API.
     """
-    for folder_path in args.rest:
+    rest = [str_to_unicode(p) for p in args.rest]
+    for folder_path in rest:
         if folder_path.startswith('od:'):
             folder_path = folder_path[3:]
 
@@ -481,8 +487,8 @@ def do_move(client, args):
 
     Not working so well....
     """
-    from_location = args.rest[0]
-    to_location = args.rest[1]
+    from_location = str_to_unicode(args.rest[0])
+    to_location = str_to_unicode(args.rest[1])
 
     # rename
     if path_to_remote_path(from_location) == path_to_remote_path(to_location):
@@ -513,10 +519,15 @@ def do_remote(client, args):
 
     args.rest: list of remote URLs.
     """
-    for i in args.rest:
+    rest = [str_to_unicode(p) for p in args.rest]
+    for i in rest:
         # There is no guarantee that this shall be normal, JUST like
         # all the similar services
-        json_data = {'@microsoft.graph.sourceUrl': i, 'file': {}, 'name': path_to_name(i)}
+        conf = get_conf()
+        if conf.get('is_business', False):
+            json_data = {'@microsoft.graph.sourceUrl': i, 'file': {}, 'name': path_to_name(i)}
+        else:
+            json_data = {'@content.sourceUrl': i, 'file': {}, 'name': path_to_name(i)}
 
         root = client.item(drive = 'me', id = 'root').get()
         parent_id = root.id
@@ -531,6 +542,19 @@ def do_remote(client, args):
         print(req.headers['location'])
 
     return client
+
+
+def do_status(client, args):
+    """
+    """
+    rest = [str_to_unicode(p) for p in args.rest]
+    for url in rest:
+        req = requests.get(url,
+                           headers = {'Authorization': 'bearer {access_token}'.format(
+                           access_token = get_access_token(client)),
+                           'Content-Type': 'application/json',
+                           'Prefer': 'respond-async', })
+        print(req.json())
 
 
 def do_quota(client, args):
@@ -586,7 +610,8 @@ def do_search(client, args):
     # reuse session for faster multi page query
     requests_session = requests.Session()
 
-    search_query = ' '.join(args.rest)
+    rest = [str_to_unicode(p) for p in args.rest]
+    search_query = ' '.join(rest)
 
     search_url = client.base_url + "drive//root/search(q='{search_query}')".format(search_query = search_query)
 

@@ -4,6 +4,7 @@
 # Purpose: Static varibles for onedrivecmd
 # Created: 09/24/2016
 
+from __future__ import unicode_literals
 
 global VER, redirect_uri, client_secret, client_id, api_base_url, scopes, discovery_uri, auth_server_url, auth_token_url
 

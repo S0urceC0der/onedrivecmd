@@ -4,6 +4,8 @@
 # Purpose: A command line client for OneDrive
 # Created: 09/23/2016
 
+from __future__ import unicode_literals
+
 try:
     from onedrivecmd.utils.actions import *
     from onedrivecmd.utils.arguments import parse_args
@@ -83,6 +85,9 @@ def main():
 
     elif args.mode == 'remote':
         do_remote(client, args)
+
+    elif args.mode == 'status':
+        do_status(client, args)
 
     elif args.mode == 'search':
         do_search(client, args)

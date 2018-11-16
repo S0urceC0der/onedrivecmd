@@ -4,10 +4,13 @@
 # Purpose: File, path and OS related helpers for onedrivecmd
 # Created: 09/24/2016
 
+from __future__ import unicode_literals
 import sys
+import platform
 import os
 
 # compact Python 2.*
+PY2 = sys.version_info[0] == 2
 if sys.version_info < (3, 0):
     input = raw_input
     from urllib import unquote
@@ -39,6 +42,14 @@ def file_read_seek_len(filename, from_byte, step_byte):
         f.seek(from_byte)
         return f.read(step_byte)
 
+## convert path to unicode string
+def str_to_unicode(s):
+    if PY2:
+        if platform.system() == "Windows":
+            s = s.decode("gbk")
+        else:
+            s = s.decode("utf-8")
+    return s
 
 ## path related
 def path_to_name(path):
