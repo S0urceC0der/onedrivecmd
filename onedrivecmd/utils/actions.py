@@ -472,8 +472,8 @@ def do_mkdir(client, args):
 
         req = convert_utf8_dict_to_dict(req.json())
 
-        if not req['name']:
-            print('ERROR: Cannot create {folder_path}'.format(folder_path = folder_path))
+        if "error" in req:
+            print("ERROR: Cannot create {folder_path}, message: {err}".format(folder_path=folder_path, err=req["error"].get("message", "")))
 
     return client
 
