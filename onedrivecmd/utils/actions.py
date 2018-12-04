@@ -329,6 +329,9 @@ def do_list(client, args, lFolders = None):
         # get the folder entry point
         curPath = path_to_remote_path(path)
         folder = get_remote_item(client, path = curPath)
+        if folder is None:
+            print('No such file or directory')
+            return client
 
         for i in folder:
             if show_fullpath:
